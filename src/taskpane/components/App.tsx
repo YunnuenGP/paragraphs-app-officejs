@@ -1,6 +1,8 @@
-import { Label, SearchBox, Stack } from "@fluentui/react";
+import { Stack } from "@fluentui/react";
 import * as React from "react";
-import { sampleParagraph } from "../../../data/sampleParagraphs";
+import { Header } from "./header/Header";
+import { ContentContainer } from "./content/Container";
+import { Provider } from "../context/StoreContext";
 
 export interface Props {
   title: string;
@@ -8,25 +10,12 @@ export interface Props {
 }
 
 const App: React.FC<Props> = () => {
-  const parsedParagraph = new DOMParser().parseFromString(sampleParagraph, "text/xml");
-
-  // Get run elements in this paragraph. "w:r" is the tagname for runs
-  const runs = parsedParagraph.documentElement.getElementsByTagName("w:r");
-  let textContent = "";
-  // @ts-ignore
-  runs.forEach((run) => (textContent += run.textContent));
-
   return (
-    <Stack tokens={{ childrenGap: 32 }}>
-      <SearchBox onSearch={() => {}} />
-      <Stack>
-        <Label>Paragraph Content</Label>
-        {parsedParagraph.documentElement.textContent}
-      </Stack>
-      <Stack>
-        <Label>Run Content</Label>
-        {textContent}
-      </Stack>
+    <Stack as="section" verticalFill>
+      <Header logo={require("./../../../assets/logo-filled.png")} title={"logo"} message="Paragraphs" />
+      <Provider>
+        <ContentContainer />
+      </Provider>
     </Stack>
   );
 };

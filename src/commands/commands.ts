@@ -7,6 +7,10 @@
 
 Office.onReady(() => {
   // If needed, Office.js is ready to be called
+  // Determine if the user's version of Office supports all the Office.js APIs that are used in the tutorial.
+  if (!Office.context.requirements.isSetSupported("WordApi", "1.3")) {
+    console.log("Sorry. The tutorial add-in uses Word.js APIs that are not available in your version of Office.");
+  }
 });
 
 /**

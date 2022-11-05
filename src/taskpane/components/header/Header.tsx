@@ -11,13 +11,7 @@ const theme = getTheme();
 const styles = {
   root: [
     {
-      // background: theme.palette.themeSecondary,
       background: `linear-gradient(90deg, ${theme.palette.themePrimary} 0%, ${theme.palette.themeSecondary} 100%)`,
-      // selectors: {
-      //   ":hover": {
-      //     background: theme.palette.themeSecondary,
-      //   },
-      // },
     },
   ],
 };
@@ -46,7 +40,7 @@ export const Header: React.FC<HeaderProps> = (props) => {
       tokens={{ childrenGap: "2%", padding: "1% 20px" }}
     >
       <img className={classNames.image} src={logo} alt={title} />
-      <h1 className={classNames.title}>{message}</h1>
+      <h2 className={classNames.title}>{message}</h2>
     </Stack>
   );
 };

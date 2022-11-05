@@ -1,11 +1,8 @@
-import { IParagraphInfo } from "../word.types";
-
 interface IOptionsProps {
-  htmlCallback?: (htmlString: string) => string;
-  textCallback?: (htmlString: string) => string;
+  HTMLCallback?: (HTMLString: string) => string;
 }
 
-export const fetchParagraphInfo = (index: number, options?: IOptionsProps): Promise<IParagraphInfo> => {
+export const fetchSingleParagraph = (index: number, options?: IOptionsProps): Promise<string> => {
   return Word.run(async (context) => {
     // Getting first paragraph node from body content.
     let paragraph = context.document.body.paragraphs.getFirst();
@@ -16,7 +13,7 @@ export const fetchParagraphInfo = (index: number, options?: IOptionsProps): Prom
     }
 
     // Queueing actions to get paragraph data and its HTML representation, position matters!.
-    paragraph.load("text");
+    paragraph.load("style");
     let htmlParagraph = paragraph.getHtml();
 
     // Apply Queued actions.
@@ -31,14 +28,41 @@ export const fetchParagraphInfo = (index: number, options?: IOptionsProps): Prom
     }
 
     // Applying any external parser to the values.
-    const html = options.htmlCallback ? options.htmlCallback(htmlParagraph.value) : htmlParagraph.value;
-    const text = options.textCallback ? options.textCallback(paragraph.text) : paragraph.text;
+    const html = options.HTMLCallback ? options.HTMLCallback(htmlParagraph.value) : htmlParagraph.value;
 
-    return { html, text };
+    return html;
   });
 };
 
-export const fetchParagraphInfoCollection = (options?: IOptionsProps): Promise<string[]> => {
+export const fetchParagraphBatch = (amount: number, options?: IOptionsProps): Promise<string[]> => {
+  return Word.run(async (context) => {
+    const paragraphs = [];
+    let paragraph = context.document.body.paragraphs.getFirst();
+    paragraph.load("style");
+    paragraphs.push(paragraph);
+
+    // Traveling across paragraphs nodes.
+    for (let i = 1; i <= amount; i++) {
+      paragraph = paragraph.getNextOrNullObject();
+      paragraph.load("style");
+      paragraphs.push(paragraph);
+    }
+
+    // Apply Queued actions. We need this to get access to paragraphs methods such as getHtml.
+    await context.sync();
+
+    const paragraphBatch = paragraphs.map((p) => p.getHtml());
+    await context.sync();
+
+    // We need to get html value created on the last sync. Also applying any external parser to the values.
+    return paragraphBatch.map((paragraphInfo) => {
+      const html = options.HTMLCallback ? options.HTMLCallback(paragraphInfo.value) : paragraphInfo.value;
+      return html;
+    });
+  });
+};
+
+export const fetchParagraphCollection = (options?: IOptionsProps): Promise<string[]> => {
   return Word.run(async (context) => {
     // Getting all paragraph nodes from body content.
     const paragraphs = context.document.body.paragraphs;
@@ -53,7 +77,7 @@ export const fetchParagraphInfoCollection = (options?: IOptionsProps): Promise<s
 
     // We need to get html value created on the last sync. Also applying any external parser to the values.
     return paragraphInfoCollection.map((paragraphInfo) => {
-      const html = options.htmlCallback ? options.htmlCallback(paragraphInfo.value) : paragraphInfo.value;
+      const html = options.HTMLCallback ? options.HTMLCallback(paragraphInfo.value) : paragraphInfo.value;
 
       return html;
     });

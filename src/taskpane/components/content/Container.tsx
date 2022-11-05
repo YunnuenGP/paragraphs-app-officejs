@@ -3,7 +3,7 @@ import { Stack, MessageBar, MessageBarType, Spinner, SpinnerSize, Label } from "
 import { HTMLContent } from "./htmlContent/";
 import { withHighlight } from "./highlight/";
 import { withControls } from "./controls/";
-import { useDocumentData } from "../../word/hooks/useDocumentData";
+import { useDocumentData } from "../../hooks/useDocumentData";
 
 const ContentWithHighlight = withHighlight(HTMLContent);
 const ContentWithHighlightAndControls = withControls(ContentWithHighlight);

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useActions } from "./actions";
 import { useDocumentReducer, IContextProps } from "./reducers";
 
-interface Props {
+interface ProviderProps {
   children: React.ReactNode;
 }
 
@@ -10,18 +10,12 @@ interface IActions {
   [key: string]: (value: any) => void;
 }
 
-const initData = {
-  data: [],
-  isLoading: false,
-  error: "",
-};
+const State = React.createContext<Partial<IContextProps>>(null);
+const Actions = React.createContext<Partial<IActions>>(null);
 
-const State = React.createContext<Partial<IContextProps>>(initData);
-const Actions = React.createContext<Partial<IActions>>({ log: () => {} });
-
-export const Provider = ({ children }: Props) => {
+export const Provider = ({ children }: ProviderProps) => {
   // Get state and dispatch from our custom hook reducer.
-  const { state, dispatch } = useDocumentReducer([]);
+  const { state, dispatch } = useDocumentReducer([""]);
 
   // Get actions from useActions and pass it to Context.
   const actions = useActions(dispatch);

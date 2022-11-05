@@ -38,18 +38,7 @@ const getParsedTextWithHighlight = (text: string, regexp: RegExp) => {
   return text.replace(regexp, function (str) {
     return "<mark><strong>" + str + "</strong></mark>";
   });
-  // .split(regexp)
-  // .filter((part) => part !== "")
-  // .map((part, i) => (regexp.test(part) ? `<mark key=${part + i}>${part}</mark>` : part))
-  // .join("");
 };
-
-// const getDOMDescendantNodes = (node: Element, all: Element[] = []) => {
-//   const childNodes = Array.from(node.children);
-//   all.push(...childNodes);
-//   for (const child of childNodes) getDOMDescendantNodes(child, all);
-//   return all;
-// };
 
 const stringCleanUp = (text: string) => {
   return text

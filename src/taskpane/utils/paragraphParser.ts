@@ -1,53 +1,48 @@
-export const getParagraphHTMLParsedString = (HTMLString: string): string => {
-  const paragraphElement = getHTMLParagraphNodeFromString(HTMLString);
+export const getParagraphElement = (HTMLString: string) => {
+  const paragraphElement = getParagraphElementFromHTMLString(HTMLString);
   const parsedString = stringCleanUp(paragraphElement.innerHTML);
 
-  return parsedString;
+  return parsedString as string;
 };
 
-export const getHighlightedText = (text: string, highlight: string, isHTMLString: boolean): string => {
+export const getHighlightedText = (text: string, highlight: string, isHTMLString: boolean) => {
   if (!text) return "";
   if (!highlight || !highlight.trim()) {
     return text;
   }
 
   const re = getRegexpForHighlight(highlight);
-  let paragraphHighlighted = "";
+  let _text = text;
 
   if (isHTMLString) {
-    const paragraphElement = getHTMLParagraphNodeFromString(text) as HTMLElement;
-
-    //TODO: Check the entire element's childNode's and replace textNode found (nodeType === 3) with 3 new Element nodes.
-    // (textNode, <Mark>textNode</Mark>, textNode);
-    paragraphElement.innerHTML = getParsedTextWithHighlight(paragraphElement.innerText, re);
-    paragraphHighlighted = paragraphElement.innerHTML;
-  } else {
-    paragraphHighlighted = getParsedTextWithHighlight(text, re);
+    const paragraphElement = getParagraphElementFromHTMLString(text);
+    _text = paragraphElement.textContent;
   }
 
-  return paragraphHighlighted;
+  const paragraphHighlighted = getParsedTextWithHighlight(_text, re);
+  return paragraphHighlighted as string;
 };
 
-const getRegexpForHighlight = (highlight: string) => {
+export const getRegexpForHighlight = (highlight: string) => {
   const SPECIAL_CHAR_RE = /([.?*+^$[\]\\(){}|-])/g;
   const escapedHighlight = highlight.replace(SPECIAL_CHAR_RE, "\\$1");
-  return new RegExp(`(${escapedHighlight})`, "gi");
+  return new RegExp(`(${escapedHighlight})`, "gi") as RegExp;
 };
 
-const getParsedTextWithHighlight = (text: string, regexp: RegExp) => {
+export const getParsedTextWithHighlight = (text: string, regexp: RegExp) => {
   return text.replace(regexp, function (str) {
-    return "<mark><strong>" + str + "</strong></mark>";
-  });
+    return `<mark><strong>${str}</strong></mark>`;
+  }) as string;
 };
 
-const stringCleanUp = (text: string) => {
+export const stringCleanUp = (text: string) => {
   return text
     .replace(/\r?\n|\r/g, " ") // Removing newlines aka break lines.
     .replace(/&nbsp;/g, " ") // Removing no-break space (white space).
-    .trim();
+    .trim() as string;
 };
 
-const getHTMLParagraphNodeFromString = (HTMLString: string) => {
+export const getParagraphElementFromHTMLString = (HTMLString: string) => {
   //Every paragraph contains html, head and body elements. We need to remove them!.
   const parser = new DOMParser();
   let htmlDoc: Document;
@@ -59,5 +54,5 @@ const getHTMLParagraphNodeFromString = (HTMLString: string) => {
     throw new Error(`${HTMLString} is not a valid html string.`);
   }
 
-  return htmlDoc.body?.firstElementChild;
+  return htmlDoc.body?.firstElementChild as Element;
 };

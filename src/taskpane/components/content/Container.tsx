@@ -20,15 +20,16 @@ export const ContentContainer = () => {
   const { data, errorMessage, loading } = useDocumentData();
 
   const filteredCollection = searchedValue
-    ? data.filter((paragraph) => paragraph.toLocaleLowerCase().includes(searchedValue.toLocaleLowerCase()))
+    ? data.filter((paragraph) => paragraph.text.toLocaleLowerCase().includes(searchedValue.toLocaleLowerCase()))
     : data;
 
-  const content = filteredCollection[index];
+  const content = filteredCollection.length > 0 ? filteredCollection[index] : data[index];
+  const contentHTML = filteredCollection.length > 0 ? content.html : "<p>Sorry, we couldn't find any results :( </p>";
 
   const onSearchHandler = (value: string) => {
     if (!value) {
       // Find filtered paragraph on main collection. So we wont change/skip/flicker page once we remove our search param.
-      const currentIndex = data.findIndex((paragraph) => paragraph.includes(content)) || 0;
+      const currentIndex = data.findIndex((paragraph) => paragraph.text.includes(content.text)) || 0;
       setIndex(currentIndex);
     } else {
       // New search, setting to 0 to get first finding of filteredCollection.
@@ -50,7 +51,7 @@ export const ContentContainer = () => {
     <Stack as="section" tokens={{ padding: "50px 20px 0 20px", childrenGap: "10" }}>
       {errorMessage && <ErrorAlert message={errorMessage} />}
       <ContentWithHighlightAndControls
-        content={content}
+        content={contentHTML}
         highlight={searchedValue}
         currentIndex={index}
         upperLimitIndex={filteredCollection?.length}

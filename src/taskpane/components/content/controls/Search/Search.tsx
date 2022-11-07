@@ -11,13 +11,9 @@ export const Search = ({ handleSearch }: SearchProps) => {
       maxLength={50}
       placeholder="Search"
       onSearch={(newValue) => handleSearch(newValue)}
-      // TODO: Find a solution for searchbox ignoring "escape" and "close" on "onChange" event.
       onChange={(event, newValue) => {
-        console.log(event);
+        event?.stopPropagation();
         handleSearch(newValue);
-      }}
-      onClear={() => {
-        handleSearch("");
       }}
       tabIndex={0}
       showIcon

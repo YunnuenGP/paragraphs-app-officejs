@@ -15,7 +15,7 @@ const Actions = React.createContext<Partial<IActions>>(null);
 
 export const Provider = ({ children }: ProviderProps) => {
   // Get state and dispatch from our custom hook reducer.
-  const { state, dispatch } = useDocumentReducer([""]);
+  const { state, dispatch } = useDocumentReducer([{ html: "", text: "" }]);
 
   // Get actions from useActions and pass it to Context.
   const actions = useActions(dispatch);

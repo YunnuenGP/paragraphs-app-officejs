@@ -1,7 +1,8 @@
 import { types } from "./reducers";
+import { ParagraphInfo } from "../api/fetchFromDocument";
 
 export const useActions = (dispatch) => {
-  const addCollection = (newCollection: string[]) => {
+  const addCollection = (newCollection: ParagraphInfo[]) => {
     dispatch({ type: types.ADD_PARAGRAPH_COLLECTION, payload: { data: newCollection } });
   };
   const setLoading = (isLoading: boolean) => {

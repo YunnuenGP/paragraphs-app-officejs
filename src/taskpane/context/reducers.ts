@@ -1,7 +1,8 @@
 import * as React from "react";
+import { ParagraphInfo } from "../api/fetchFromDocument";
 
 export interface IContextProps {
-  data: string[];
+  data: ParagraphInfo[];
   isLoading: boolean;
   errorMessage: string;
 }
@@ -44,7 +45,7 @@ const reducer = (state: IContextProps, action: ActionsTypes) => {
   }
 };
 
-export function useDocumentReducer(initialState: string[]) {
+export function useDocumentReducer(initialState: ParagraphInfo[]) {
   const [state, dispatch] = React.useReducer(reducer, {
     data: initialState,
     isLoading: false,
